@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vorschau — Hesse-Buchenau</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #2E2B28; font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+  /* ── Toolbar ── */
+  .toolbar {
+    background: #162318;
+    border-bottom: 1px solid rgba(168,136,74,0.3);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .toolbar .label {
+    color: #8AAD90;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 12px;
+  }
+  .toolbar button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: #8AAD90;
+    border: 1px solid rgba(138,173,144,0.35);
+    border-radius: 4px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .toolbar button:hover { background: rgba(138,173,144,0.12); color: #D6E8D8; }
+  .toolbar button.active {
+    background: #A8884A;
+    color: #162318;
+    border-color: #A8884A;
+  }
+  .toolbar .size {
+    color: #546F59;
+    font-size: 11px;
+    margin-left: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  /* ── Stage ── */
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px;
+    overflow: auto;
+  }
+  .frame-wrap {
+    background: #0D0B09;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transition: width 0.3s ease;
+    max-width: 100%;
+    height: calc(100vh - 110px);
+  }
+  .frame-wrap.desktop { border-radius: 8px; padding: 0; }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    background: #FAF8F5;
+    display: block;
+  }
+  .frame-wrap.desktop iframe { border-radius: 8px; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="label">Ansicht</span>
+  <button id="btn-desktop" class="active" onclick="setDevice('desktop')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+    Desktop
+  </button>
+  <button id="btn-tablet" onclick="setDevice('tablet')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>
+    Tablet
+  </button>
+  <button id="btn-mobile" onclick="setDevice('mobile')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"></rect><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>
+    Mobil
+  </button>
+  <span class="size" id="size-label">100%</span>
+</div>
+
+<div class="stage">
+  <div class="frame-wrap desktop" id="frame-wrap" style="width:100%">
+    <iframe src="index.html" id="preview-frame" title="Website-Vorschau"></iframe>
+  </div>
+</div>
+
+<script>
+  const SIZES = {
+    desktop: { width: '100%',  label: '100%' },
+    tablet:  { width: '788px', label: '768 px' },
+    mobile:  { width: '395px', label: '375 px' },
+  };
+  function setDevice(device) {
+    const wrap = document.getElementById('frame-wrap');
+    wrap.style.width = SIZES[device].width;
+    wrap.classList.toggle('desktop', device === 'desktop');
+    document.getElementById('size-label').textContent = SIZES[device].label;
+    for (const d of ['desktop','tablet','mobile']) {
+      document.getElementById('btn-' + d).classList.toggle('active', d === device);
+    }
+    try { localStorage.setItem('hb-preview-device', device); } catch(e) {}
+  }
+  // Restore last selection
+  try {
+    const saved = localStorage.getItem('hb-preview-device');
+    if (saved && SIZES[saved]) setDevice(saved);
+  } catch(e) {}
+</script>
+</body>
+</html>
