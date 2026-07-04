@@ -1,0 +1,183 @@
+/* Hesse-Buchenau Design System — kompilierte Tokens */
+
+/* Hesse-Buchenau — Web Fonts
+   ⚠️  SUBSTITUTION: Both typefaces are loaded from Google Fonts.
+       The brand flyer uses an unidentified bold serif (Century/Times style)
+       and an implied sans for body. Playfair Display and Source Sans 3 are
+       the closest freely available matches.
+       Please supply licensed .ttf/.woff2 files for exact brand matching. */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+
+/* Hesse-Buchenau — Color Tokens */
+
+:root {
+  /* ─── Base: Ink & Charcoal ─────────────────────── */
+  --color-ink:          #1A1714;
+  --color-charcoal:     #2E2B28;
+
+  /* ─── Base: Stone Neutrals ─────────────────────── */
+  --color-stone-800:    #4A4440;
+  --color-stone-600:    #6E6560;
+  --color-stone-400:    #A09890;
+  --color-stone-200:    #D4CFC9;
+  --color-stone-100:    #EAE6E2;
+  --color-stone-50:     #F5F2EE;
+
+  /* ─── Base: Cream & White ──────────────────────── */
+  --color-cream:        #FAF8F5;
+  --color-white:        #FFFFFF;
+
+  /* ─── Base: Sage Green (primary accent) ────────── */
+  --color-sage-900:     #1E2D21;
+  --color-sage-700:     #3D5541;
+  --color-sage-500:     #546F59;
+  --color-sage-300:     #8AAD90;
+  --color-sage-100:     #D6E8D8;
+  --color-sage-50:      #EEF5EF;
+
+  /* ─── Base: Gold (heritage accent) ─────────────── */
+  --color-gold-700:     #7A6330;
+  --color-gold-500:     #A8884A;
+  --color-gold-300:     #D4B87A;
+  --color-gold-100:     #F0E4C5;
+  --color-gold-50:      #FAF5E8;
+
+  /* ─── Semantic: Text ───────────────────────────── */
+  --text-primary:       var(--color-ink);
+  --text-secondary:     var(--color-stone-600);
+  --text-muted:         var(--color-stone-400);
+  --text-inverse:       var(--color-cream);
+  --text-accent:        var(--color-sage-700);
+  --text-gold:          var(--color-gold-700);
+
+  /* ─── Semantic: Surfaces ───────────────────────── */
+  --surface-page:       var(--color-cream);
+  --surface-card:       var(--color-white);
+  --surface-subtle:     var(--color-stone-50);
+  --surface-dark:       var(--color-charcoal);
+  --surface-darkest:    var(--color-ink);
+
+  /* ─── Semantic: Borders ────────────────────────── */
+  --border-default:     var(--color-stone-200);
+  --border-subtle:      var(--color-stone-100);
+  --border-strong:      var(--color-stone-400);
+
+  /* ─── Semantic: Accent ─────────────────────────── */
+  --accent:             var(--color-sage-700);
+  --accent-hover:       var(--color-sage-900);
+  --accent-muted:       var(--color-sage-100);
+  --accent-subtle:      var(--color-sage-50);
+  --gold:               var(--color-gold-500);
+  --gold-muted:         var(--color-gold-100);
+}
+
+
+/* Hesse-Buchenau — Typography Tokens */
+
+:root {
+  /* ─── Font Families ──────────────────────────── */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body:    'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'Courier New', Courier, monospace;
+
+  /* ─── Font Size Scale ────────────────────────── */
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.875rem;   /* 30px */
+  --text-4xl:  2.25rem;    /* 36px */
+  --text-5xl:  3rem;       /* 48px */
+  --text-6xl:  3.75rem;    /* 60px */
+  --text-7xl:  4.5rem;     /* 72px */
+
+  /* ─── Font Weights ───────────────────────────── */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ─── Line Heights ───────────────────────────── */
+  --leading-none:    1;
+  --leading-tight:   1.2;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose:   2;
+
+  /* ─── Letter Spacing ─────────────────────────── */
+  --tracking-tight:   -0.025em;
+  --tracking-normal:   0em;
+  --tracking-wide:     0.025em;
+  --tracking-wider:    0.05em;
+  --tracking-widest:   0.1em;
+  --tracking-caps:     0.12em;
+}
+
+
+/* Hesse-Buchenau — Spacing Tokens
+   Base unit: 4px. All values are multiples of 4px. */
+
+:root {
+  --space-1:  0.25rem;   /*  4px */
+  --space-2:  0.5rem;    /*  8px */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-7:  1.75rem;   /* 28px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-14: 3.5rem;    /* 56px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+  --space-32: 8rem;      /* 128px */
+}
+
+
+/* Hesse-Buchenau — Border & Radius Tokens */
+
+:root {
+  /* ─── Border Radii ───────────────────────────── */
+  --radius-none: 0;
+  --radius-xs:   2px;      /* badges, heritage marks — nearly square */
+  --radius-sm:   4px;      /* buttons, inputs */
+  --radius-md:   8px;      /* cards, panels */
+  --radius-lg:   12px;     /* larger cards, modals */
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;   /* pills */
+
+  /* ─── Border Widths ──────────────────────────── */
+  --border-thin:   1px;
+  --border-base:   1px;
+  --border-thick:  2px;
+}
+
+
+/* Hesse-Buchenau — Shadow Tokens
+   Shadows use warm-tinted rgba to match the ink color base. */
+
+:root {
+  --shadow-xs: 0 1px 2px rgba(26, 23, 20, 0.05);
+  --shadow-sm: 0 1px 3px rgba(26, 23, 20, 0.07),
+               0 1px 2px rgba(26, 23, 20, 0.04);
+  --shadow-md: 0 4px 8px rgba(26, 23, 20, 0.07),
+               0 2px 4px rgba(26, 23, 20, 0.04);
+  --shadow-lg: 0 10px 20px rgba(26, 23, 20, 0.08),
+               0 4px 8px rgba(26, 23, 20, 0.04);
+  --shadow-xl: 0 20px 40px rgba(26, 23, 20, 0.10),
+               0 8px 16px rgba(26, 23, 20, 0.05);
+
+  /* Inset shadow — used for pressed/sunken states */
+  --shadow-inset: inset 0 1px 3px rgba(26, 23, 20, 0.08);
+}
+
+

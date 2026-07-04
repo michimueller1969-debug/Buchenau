@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestattungsunternehmen Hesse-Buchenau</title>
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  :root {
+    --surface-page: #F5F2EE; --surface-card: #FFFFFF; --surface-dark: #2E2B28;
+    --surface-subtle: #EAE6E2; --border-default: #D4CFC9; --border-subtle: #E4E0DC;
+    --text-primary: #1A1714; --text-secondary: #6E6560; --text-muted: #A09890;
+    --accent: #3D5541; --accent-hover: #1E2D21; --accent-muted: rgba(61,85,65,0.1);
+    --gold-muted: rgba(168,136,74,0.12);
+  }
+  body { margin:0; background:#F5F2EE; color:#1A1714; font-family:var(--font-body); line-height:1.625; }
+  ::selection { background:rgba(168,136,74,0.3); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;} }
+  .fu  { animation: fadeUp 0.6s ease-out both; }
+  .fu2 { animation: fadeUp 0.6s 0.12s ease-out both; }
+  .fu3 { animation: fadeUp 0.6s 0.24s ease-out both; }
+  a { text-decoration:none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/* ── Badge ── */
+const BV={ default:{background:'#252220',color:'#968E88',border:'1px solid #383432'}, sage:{background:'rgba(61,85,65,0.28)',color:'#8AAD90',border:'1px solid rgba(61,85,65,0.5)'}, gold:{background:'rgba(168,136,74,0.22)',color:'#D4B87A',border:'1px solid rgba(168,136,74,0.5)'}, dark:{background:'#0D0B09',color:'#F0EDE8',border:'none'} };
+function Badge({variant='default',size='md',children,style:x}){
+  const sz={sm:{fontSize:'0.68rem',padding:'2px 7px'},md:{fontSize:'0.68rem',padding:'3px 10px'},lg:{fontSize:'var(--text-sm)',padding:'4px 12px'}};
+  return <span style={{display:'inline-flex',alignItems:'center',fontFamily:'var(--font-body)',fontWeight:600,letterSpacing:'0.13em',textTransform:'uppercase',borderRadius:'2px',lineHeight:1,whiteSpace:'nowrap',...sz[size],...BV[variant],...x}}>{children}</span>;
+}
+
+/* ── Button ── */
+const BB={display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:'var(--font-body)',fontWeight:600,letterSpacing:'0.04em',cursor:'pointer',border:'none',transition:'background 0.2s, color 0.2s, border-color 0.2s',borderRadius:4,lineHeight:1,whiteSpace:'nowrap'};
+const BS={sm:{fontSize:'var(--text-sm)',padding:'7px 14px'},md:{fontSize:'var(--text-base)',padding:'10px 20px'},lg:{fontSize:'var(--text-lg)',padding:'13px 28px'}};
+const BT={primary:{background:'var(--accent)',color:'#F0EDE8'},secondary:{background:'transparent',color:'#8AAD90',border:'1px solid #546F59',boxSizing:'border-box'},ghost:{background:'transparent',color:'#968E88'},gold:{background:'#A8884A',color:'#1A1410'}};
+const BH={primary:{background:'var(--accent-hover)'},secondary:{background:'rgba(61,85,65,0.2)',color:'#A8D4B0'},ghost:{background:'#1E1C1A',color:'#F0EDE8'},gold:{background:'#C4A050'}};
+function Button({variant='primary',size='md',children,disabled,href,onClick,style:x}){
+  const[h,sH]=React.useState(false);
+  const s={...BB,...BS[size],...BT[variant],...(h&&!disabled?BH[variant]:{}),...(disabled?{opacity:0.4,cursor:'not-allowed',pointerEvents:'none'}:{}),...x};
+  return href?<a href={href} style={s} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)}>{children}</a>
+             :<button style={s} disabled={disabled} onClick={onClick} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)}>{children}</button>;
+}
+
+/* ── Card ── */
+function Card({children,padding='md',shadow='sm',radius='md',bordered=true,background,style:x}){
+  const p={none:'0',sm:'var(--space-4)',md:'var(--space-6)',lg:'var(--space-8)',xl:'var(--space-10)'};
+  const sh={none:'none',xs:'0 1px 3px rgba(0,0,0,.25)',sm:'0 2px 6px rgba(0,0,0,.28)',md:'0 6px 16px rgba(0,0,0,.35)',lg:'0 12px 32px rgba(0,0,0,.4)'};
+  const r={none:'0',sm:'var(--radius-sm)',md:'var(--radius-md)',lg:'var(--radius-lg)'};
+  return <div style={{background:background||'#EEF5EF',padding:p[padding],boxShadow:sh[shadow],borderRadius:r[radius],border:bordered?'1px solid rgba(61,85,65,0.25)':'none',...x}}>{children}</div>;
+}
+
+/* ── Nav ── */
+function NavLink({href,children}){
+  const[h,sH]=React.useState(false);
+  return <a href={href} style={{fontSize:'var(--text-sm)',fontWeight:500,color:h?'#D6E8D8':'#8AAD90',padding:'6px 12px',borderRadius:4,transition:'color 0.15s'}} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)}>{children}</a>;
+}
+function Nav({links=[],phone}){
+  return(
+    <nav style={{background:'#162318',borderBottom:'1px solid rgba(168,136,74,0.28)',boxShadow:'0 1px 4px rgba(26,23,20,0.06)',height:72,display:'flex',alignItems:'center',padding:'0 var(--space-8)',position:'sticky',top:0,zIndex:100}}>
+      <a href="/" style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
+        <TreeMark size={32} color='#A8884A'/>
+        <div>
+          <div style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:'var(--text-base)',letterSpacing:'0.06em',color:'#D6E8D8',lineHeight:1.1}}>HESSE-BUCHENAU</div>
+          <div style={{fontSize:'0.58rem',fontWeight:600,letterSpacing:'0.16em',textTransform:'uppercase',color:'#A8884A',marginTop:3}}>Bestattungsunternehmen</div>
+        </div>
+      </a>
+      <div style={{display:'flex',alignItems:'center',gap:2,marginLeft:'auto',marginRight:'var(--space-8)'}}>
+        {links.map((l,i)=><NavLink key={i} href={l.href}>{l.label}</NavLink>)}
+      </div>
+      {phone&&(
+        <a href={`tel:${phone.replace(/\s/g,'')}`}
+          style={{display:'flex',alignItems:'center',gap:6,fontSize:'var(--text-sm)',fontWeight:600,color:'#D4B87A',padding:'8px 16px',borderRadius:4,border:'1px solid rgba(168,136,74,0.45)',transition:'background 0.15s',flexShrink:0}}
+          onMouseEnter={e=>e.currentTarget.style.background='rgba(168,136,74,0.12)'}
+          onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+          <PhoneIcon size={13}/>{phone}
+        </a>
+      )}
+    </nav>
+  );
+}
+
+/* ── ServiceCard ── */
+function ServiceCard({icon,title,description,href}){
+  const[h,sH]=React.useState(false);
+  return(
+    <a href={href||'#'}
+      style={{display:'flex',flexDirection:'column',gap:'var(--space-4)',padding:'var(--space-8)',background:h?'#E4EFE5':'#EEF5EF',border:`1px solid ${h?'rgba(61,85,65,0.45)':'rgba(61,85,65,0.25)'}`,borderTop:`2px solid ${h?'rgba(168,136,74,0.8)':'rgba(168,136,74,0.35)'}`,borderRadius:8,boxShadow:h?'0 8px 24px rgba(0,0,0,0.4)':'0 2px 8px rgba(0,0,0,0.3)',transition:'border-color 0.2s, box-shadow 0.2s, transform 0.2s',transform:h?'translateY(-3px)':'none'}}
+      onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)}>
+      <div style={{width:44,height:44,background:h?'rgba(61,85,65,0.22)':'rgba(61,85,65,0.12)',borderRadius:4,display:'flex',alignItems:'center',justifyContent:'center',color:'#3D5541',flexShrink:0}}>{icon}</div>
+      <div>
+        <div style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:'var(--text-lg)',color:'#1A1714',lineHeight:1.25,marginBottom:'var(--space-2)'}}>{title}</div>
+        {description&&<div style={{fontSize:'var(--text-sm)',color:'#6E6560',lineHeight:1.65}}>{description}</div>}
+      </div>
+      <div style={{marginTop:'auto',display:'flex',alignItems:'center',gap:4,color:h?'#A8884A':'#3D5541',fontSize:'var(--text-sm)',fontWeight:600,transition:'color 0.2s'}}>
+        <span>Mehr erfahren</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{transform:h?'translateX(3px)':'none',transition:'transform 0.2s'}}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+  );
+}
+
+/* ── Ornamental helpers ── */
+function Diamond({c,size=7,style:x}){
+  return <svg width={size} height={size} viewBox="0 0 8 8" style={{flexShrink:0,...x}} aria-hidden="true"><path d="M4 0L8 4L4 8L0 4Z" fill={c}/></svg>;
+}
+function OrnamentalDivider({variant='gold',style:x}){
+  const cols={gold:'#A8884A',silver:'#A09890',copper:'#B87040'};
+  const c=cols[variant]||cols.gold;
+  return(
+    <div style={{display:'flex',alignItems:'center',gap:7,...x}}>
+      <div style={{flex:1,height:1,background:`linear-gradient(to right,transparent,${c}44,${c})`}}/>
+      <Diamond c={c} size={6}/><div style={{width:14,height:1,background:c}}/>
+      <Diamond c={c} size={9}/><div style={{width:14,height:1,background:c}}/>
+      <Diamond c={c} size={6}/>
+      <div style={{flex:1,height:1,background:`linear-gradient(to left,transparent,${c}44,${c})`}}/>
+    </div>
+  );
+}
+function SectionHeader({badge,badgeVariant='sage',title,subtitle,metal='gold',dark=false}){
+  return(
+    <div style={{textAlign:'center',marginBottom:'var(--space-14)'}}>
+      <Badge variant={badgeVariant} style={{marginBottom:'var(--space-4)'}}>{badge}</Badge>
+      <OrnamentalDivider variant={metal} style={{maxWidth:340,margin:'0 auto var(--space-5)'}}/>
+      <h2 style={{fontFamily:'var(--font-display)',fontSize:'var(--text-4xl)',fontWeight:700,margin:'0 0 var(--space-4)',letterSpacing:'-0.01em',color:dark?'#F0EDE8':'#1A1714'}}>{title}</h2>
+      {subtitle&&<p style={{fontSize:'var(--text-lg)',color:dark?'#8AAD90':'#6E6560',maxWidth:520,margin:'0 auto',lineHeight:1.6}}>{subtitle}</p>}
+    </div>
+  );
+}
+
+/* ── Brand SVGs ── */
+const TreeMark=({size=48,color='currentColor',opacity=1})=>(
+  <svg viewBox="0 0 100 114" width={size} height={size} fill={color} style={{opacity,flexShrink:0}} aria-hidden="true">
+    <ellipse cx="50" cy="14" rx="19" ry="16"/><ellipse cx="50" cy="34" rx="34" ry="28"/>
+    <ellipse cx="26" cy="46" rx="22" ry="19"/><ellipse cx="74" cy="46" rx="22" ry="19"/>
+    <ellipse cx="38" cy="58" rx="17" ry="14"/><ellipse cx="62" cy="58" rx="17" ry="14"/>
+    <rect x="43" y="68" width="14" height="42" rx="3"/>
+  </svg>
+);
+
+/* ── Realistic Urn SVG ── */
+const UrnMark=({size=300,opacity=1,idPrefix='urn'})=>{
+  const p=idPrefix;
+  const leaves=[12,24,35,46,57,68,79,90,101];
+  return(
+    <svg viewBox="0 0 120 192" width={size} height={Math.round(size*192/120)}
+         style={{opacity,flexShrink:0,display:'block'}} aria-hidden="true">
+      <defs>
+        <radialGradient id={`${p}Bd`} cx="72%" cy="21%" r="58%" fx="80%" fy="14%">
+          <stop offset="0%"   stopColor="#E8EAE8"/>
+          <stop offset="6%"   stopColor="#AAAAAA"/>
+          <stop offset="18%"  stopColor="#585858"/>
+          <stop offset="38%"  stopColor="#2C2420"/>
+          <stop offset="62%"  stopColor="#180E0A"/>
+          <stop offset="85%"  stopColor="#0C0604"/>
+          <stop offset="100%" stopColor="#060200"/>
+        </radialGradient>
+        <radialGradient id={`${p}Ld`} cx="70%" cy="28%" r="55%">
+          <stop offset="0%"   stopColor="#DCDCDA"/>
+          <stop offset="8%"   stopColor="#909090"/>
+          <stop offset="28%"  stopColor="#404040"/>
+          <stop offset="62%"  stopColor="#181410"/>
+          <stop offset="100%" stopColor="#080402"/>
+        </radialGradient>
+        <linearGradient id={`${p}Cu`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#5C2C0C"/>
+          <stop offset="18%"  stopColor="#C87040"/>
+          <stop offset="42%"  stopColor="#E89050"/>
+          <stop offset="62%"  stopColor="#B86830"/>
+          <stop offset="85%"  stopColor="#8A4818"/>
+          <stop offset="100%" stopColor="#3A1804"/>
+        </linearGradient>
+        <linearGradient id={`${p}CB`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#3A1804" stopOpacity="0.9"/>
+          <stop offset="20%"  stopColor="#A05828" stopOpacity="0.95"/>
+          <stop offset="48%"  stopColor="#C87240"/>
+          <stop offset="72%"  stopColor="#8C4818" stopOpacity="0.95"/>
+          <stop offset="100%" stopColor="#2C1002" stopOpacity="0.85"/>
+        </linearGradient>
+        <path id={`${p}lf`} d="M0,-7 C1,-7 3,-6 3,-4 C5,-5 6,-3 5,-1 C7,-2 8,0 6,2 C8,2 8,4 6,5 C7,7 5,7 4,5 C3,7 1,8 0,7 C-1,8 -3,7 -4,5 C-5,7 -7,7 -6,5 C-8,4 -8,2 -6,2 C-8,0 -7,-2 -5,-1 C-6,-3 -5,-5 -3,-4 C-3,-6 -1,-7 0,-7 Z"/>
+        <radialGradient id={`${p}Sh`} cx="50%" cy="90%" r="50%">
+          <stop offset="0%"   stopColor="#000000" stopOpacity="0.55"/>
+          <stop offset="100%" stopColor="#000000" stopOpacity="0"/>
+        </radialGradient>
+      </defs>
+      {/* Lid */}
+      <ellipse cx="60" cy="17" rx="46" ry="14" fill={`url(#${p}Ld)`}/>
+      <path d="M22,13 Q60,5 98,13" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.4"/>
+      <path d="M14,17 Q60,24 106,17 L106,28 Q60,34 14,28 Z" fill={`url(#${p}Ld)`}/>
+      <ellipse cx="60" cy="28" rx="46" ry="7" fill={`url(#${p}Ld)`}/>
+      {/* Copper ring */}
+      <ellipse cx="60" cy="28" rx="45.5" ry="6.5" fill={`url(#${p}Cu)`}/>
+      <path d="M24,25 Q60,20 96,25" fill="none" stroke="rgba(230,160,80,0.35)" strokeWidth="1"/>
+      {/* Body */}
+      <path d="M15,28 C2,40 0,68 1,100 C2,128 8,150 20,162 Q34,172 60,173 Q86,172 100,162 C112,150 118,128 119,100 C120,68 118,40 105,28 Z" fill={`url(#${p}Bd)`}/>
+      <path d="M15,28 C2,40 0,68 1,100 C2,128 8,150 20,162 Q34,172 60,173 Q86,172 100,162 C112,150 118,128 119,100 C120,68 118,40 105,28 Z" fill={`url(#${p}Sh)`}/>
+      {/* Copper leaf band */}
+      <path d="M4,78 Q60,88 116,78 L115,100 Q60,110 5,100 Z" fill={`url(#${p}CB)`}/>
+      <path d="M4,78 Q60,85 116,78" fill="none" stroke="rgba(200,120,50,0.5)" strokeWidth="0.8"/>
+      <path d="M5,100 Q60,107 115,100" fill="none" stroke="rgba(200,120,50,0.4)" strokeWidth="0.7"/>
+      {leaves.map((x,i)=>(
+        <use key={i} href={`#${p}lf`} transform={`translate(${x},88) rotate(${i%2===0?-8:10}) scale(${i%3===0?1.18:1},1.25)`} fill="rgba(0,0,0,0.48)"/>
+      ))}
+      {leaves.map((x,i)=>(
+        <use key={`h${i}`} href={`#${p}lf`} transform={`translate(${x-0.5},87.5) rotate(${i%2===0?-8:10}) scale(${i%3===0?1.18:1},1.25)`} fill="rgba(190,110,40,0.22)"/>
+      ))}
+      {/* Base rim */}
+      <path d="M20,162 Q34,172 60,173 Q86,172 100,162 L98,170 Q84,179 60,180 Q36,179 22,170 Z" fill="rgba(12,6,2,0.95)"/>
+      <path d="M20,162 Q34,169 60,170 Q86,169 100,162" fill="none" stroke="rgba(180,100,40,0.25)" strokeWidth="0.8"/>
+    </svg>
+  );
+};
+
+/* ── Icons ── */
+const PhoneIcon=({size=18})=><svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>;
+const MapPinIcon=()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>;
+const MailIcon=()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
+const LeafIcon=()=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 015 9c0-3.866 2.239-7 7-7s7 3.134 7 7a7 7 0 01-7 7z"/><path d="M11 20v-9"/></svg>;
+const FlameIcon=()=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 01-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>;
+const WavesIcon=()=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2v2c-2.5 0-2.5 2-5 2-2.6 0-2.4-2-5-2-2.5 0-2.5 2-5 2C3.2 9 2.6 8.5 2 8V6z"/><path d="M2 12c.6.5 1.2 1 2.5 1C7 13 7 11 9.5 11c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2v2c-2.5 0-2.5 2-5 2-2.6 0-2.4-2-5-2-2.5 0-2.5 2-5 2C3.2 15 2.6 14.5 2 14v-2z"/><path d="M2 18c.6.5 1.2 1 2.5 1C7 19 7 17 9.5 17c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2v2c-2.5 0-2.5 2-5 2-2.6 0-2.4-2-5-2-2.5 0-2.5 2-5 2C3.2 21 2.6 20.5 2 20v-2z"/></svg>;
+const ForestIcon=()=><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 14l-5-5-5 5"/><path d="M17 9l-5-5-5 5"/><line x1="12" y1="20" x2="12" y2="14"/></svg>;
+
+/* ── Data ── */
+const NAV_LINKS=[{label:'Leistungen',href:'#leistungen'},{label:'Über uns',href:'#ueber-uns'},{label:'Kontakt',href:'#kontakt'}];
+const SERVICES=[
+  {icon:<LeafIcon/>,  title:'Erdbestattung',      description:'Traditionelle Bestattung im Familiengrab oder Reihengrab — mit sorgfältiger Vorbereitung und persönlicher Begleitung.'},
+  {icon:<FlameIcon/>, title:'Feuerbestattung',     description:'Einäscherung mit individueller Urnenbestattung im In- oder Ausland. Diskretion und Würde stehen im Mittelpunkt.'},
+  {icon:<WavesIcon/>, title:'Seebestattung',       description:'Beisetzung auf hoher See oder in Küstengewässern — eine naturverbundene Alternative zur traditionellen Bestattung.'},
+  {icon:<ForestIcon/>,title:'Friedwaldbestattung', description:'Letzte Ruhe unter einem Baum im Wald — naturbelassen, still, für immer grün.'},
+];
+
+/* ── App ── */
+function App(){
+  return(
+    <div>
+      {/* Metallic top strip */}
+      <div style={{height:3,background:'linear-gradient(to right,#1E2D21,#A8884A 28%,#B87040 50%,#A8884A 72%,#1E2D21)'}}/>
+
+      <Nav links={NAV_LINKS} phone="0 56 53 / 18 28"/>
+
+      {/* ── Hero ── */}
+      <section style={{background:'#FAF8F5',minHeight:580,display:'flex',alignItems:'center',overflow:'hidden',padding:'var(--space-16) var(--space-8)'}}>
+        <div style={{maxWidth:1200,margin:'0 auto',width:'100%',display:'flex',alignItems:'center',gap:'var(--space-16)',flexWrap:'wrap'}}>
+          <div style={{flex:'1',minWidth:280,maxWidth:620}}>
+            <div className="fu" style={{display:'inline-flex',flexDirection:'column',alignItems:'center',gap:5,marginBottom:'var(--space-7)'}}>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <div style={{width:36,height:1,background:'linear-gradient(to right,transparent,#A8884A)'}}/>
+                <Diamond c="#D4B87A" size={5}/>
+                <span style={{fontFamily:'var(--font-body)',fontSize:'0.58rem',fontWeight:700,letterSpacing:'0.28em',color:'#A8884A',textTransform:'uppercase'}}>Seit 1872</span>
+                <Diamond c="#D4B87A" size={5}/>
+                <div style={{width:36,height:1,background:'linear-gradient(to left,transparent,#A8884A)'}}/>
+              </div>
+              <div style={{width:'100%',height:1,background:'linear-gradient(to right,transparent,rgba(168,136,74,0.4),transparent)'}}/>
+            </div>
+            <h1 className="fu2" style={{fontFamily:'var(--font-display)',fontSize:'clamp(2rem,4vw,3.4rem)',fontWeight:700,color:'#1A1714',lineHeight:1.12,margin:'0 0 var(--space-6)',letterSpacing:'-0.015em'}}>
+              Wir begleiten Sie<br/>
+              <em style={{fontWeight:400,color:'#3D5541'}}>in schwerer Zeit.</em>
+            </h1>
+            <p className="fu3" style={{fontSize:'var(--text-lg)',color:'#6E6560',lineHeight:1.7,margin:'0 0 var(--space-10)',maxWidth:440}}>
+              Erd-, See-, Feuer- und Friedwald-Bestattungen sowie Überführungen ins In- und Ausland. Wir erledigen sämtliche Formalitäten für Sie.
+            </p>
+            <div style={{display:'flex',gap:'var(--space-4)',flexWrap:'wrap',alignItems:'center'}}>
+              <Button variant="gold" size="lg" href="#kontakt"><PhoneIcon size={15}/>Jetzt anrufen</Button>
+              <Button variant="secondary" size="lg" href="#leistungen">Unsere Leistungen</Button>
+            </div>
+          </div>
+
+          {/* Right: urn photo (transparent bg) */}
+          <div style={{flex:'0 0 auto',display:'flex',flexDirection:'column',alignItems:'center',margin:'0 auto'}}>
+            <img
+              src="assets/urne-waldmotiv.png"
+              alt="Urne mit Waldmotiv"
+              style={{
+                width: 560,
+                height: 'auto',
+                display: 'block',
+                WebkitMaskImage: 'radial-gradient(ellipse 52% 72% at 50% 50%, black 42%, rgba(0,0,0,0.9) 58%, rgba(0,0,0,0.35) 74%, transparent 86%)',
+                maskImage:       'radial-gradient(ellipse 52% 72% at 50% 50%, black 42%, rgba(0,0,0,0.9) 58%, rgba(0,0,0,0.35) 74%, transparent 86%)',
+              }}
+            />
+            <OrnamentalDivider variant="copper" style={{width:160,marginTop:8}}/>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Notice strip */}
+      <div style={{background:'#EEF5EF',borderTop:'1px solid rgba(61,85,65,0.2)',borderBottom:'1px solid rgba(61,85,65,0.2)',padding:'var(--space-4) var(--space-8)',textAlign:'center',display:'flex',alignItems:'center',justifyContent:'center',gap:12}}>
+        <Diamond c="#B87040" size={6}/>
+        <p style={{margin:0,fontSize:'var(--text-sm)',color:'#3D5541',fontWeight:500}}>
+          Wir sind weiterhin für Sie da &nbsp;·&nbsp; Mobil: 0162 / 258 212 9 &nbsp;·&nbsp; Rund um die Uhr erreichbar
+        </p>
+        <Diamond c="#B87040" size={6}/>
+      </div>
+
+      {/* ── Leistungen ── */}
+      <section id="leistungen" style={{padding:'var(--space-20) var(--space-8)',maxWidth:1200,margin:'0 auto'}}>
+        <SectionHeader badge="Unsere Leistungen" badgeVariant="sage" metal="gold"
+          title="Würdevolle Bestattungen"
+          subtitle="Jeder Abschied ist einzigartig. Wir begleiten Sie bei jeder Bestattungsform — persönlich, diskret und erfahren."/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'var(--space-6)'}}>
+          {SERVICES.map((s,i)=><ServiceCard key={i} {...s} href="#"/>)}
+        </div>
+        <div style={{marginTop:'var(--space-10)',padding:'var(--space-8)',background:'#EAE6E2',borderRadius:8,border:'1px solid #D4CFC9',borderTop:'1px solid rgba(168,136,74,0.35)'}}>
+          <div style={{display:'flex',flexWrap:'wrap',gap:'var(--space-8)'}}>
+            {[['Überführungen','In- und Ausland. Wir koordinieren alle nötigen Formalitäten und Behördengänge.'],
+              ['Friedhofsarbeiten','Erdaushub und Grabpflege — alles aus einer Hand, sorgfältig und zuverlässig.'],
+              ['Formalitäten','Von der Sterbeurkunde bis zur Erbschaftsregelung — wir begleiten Sie durch jeden Schritt.']
+            ].map(([t,d])=>(
+              <div key={t} style={{flex:'1',minWidth:200}}>
+                <div style={{fontFamily:'var(--font-display)',fontSize:'var(--text-xl)',fontWeight:600,marginBottom:'var(--space-2)',color:'#1A1714'}}>{t}</div>
+                <p style={{margin:0,color:'#6E6560',fontSize:'var(--text-sm)',lineHeight:1.65}}>{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Über uns ── */}
+      <section id="ueber-uns" style={{background:'#2E4A32',padding:'var(--space-20) var(--space-8)',borderTop:'1px solid #243A28',borderBottom:'1px solid #243A28'}}>
+        <div style={{maxWidth:1200,margin:'0 auto',display:'flex',gap:'var(--space-16)',alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{flexShrink:0,display:'flex',flexDirection:'column',alignItems:'center',gap:'var(--space-5)'}}>
+            <TreeMark size={90} color='#8AAD90'/>
+            <div style={{position:'relative',border:'1px solid rgba(168,136,74,0.5)',padding:'var(--space-3) var(--space-7)',textAlign:'center',background:'rgba(168,136,74,0.05)'}}>
+              <Diamond c="#A8884A" size={8} style={{position:'absolute',top:-5,left:-5}}/>
+              <Diamond c="#A8884A" size={8} style={{position:'absolute',top:-5,right:-5}}/>
+              <Diamond c="#A8884A" size={8} style={{position:'absolute',bottom:-5,left:-5}}/>
+              <Diamond c="#A8884A" size={8} style={{position:'absolute',bottom:-5,right:-5}}/>
+              <div style={{fontFamily:'var(--font-body)',fontSize:'0.5rem',fontWeight:700,letterSpacing:'0.35em',color:'rgba(168,136,74,0.6)',marginBottom:4}}>◆ ◆ ◆</div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:'0.78rem',fontWeight:600,letterSpacing:'0.2em',color:'#A8884A',textTransform:'uppercase'}}>SEIT 1872</div>
+              <div style={{fontFamily:'var(--font-body)',fontSize:'0.5rem',fontWeight:700,letterSpacing:'0.35em',color:'rgba(168,136,74,0.6)',marginTop:4}}>◆ ◆ ◆</div>
+            </div>
+          </div>
+          <div style={{flex:1,minWidth:280}}>
+            <Badge variant="gold" style={{marginBottom:'var(--space-4)'}}>Über uns</Badge>
+            <OrnamentalDivider variant="copper" style={{maxWidth:260,margin:'0 0 var(--space-5)'}}/>
+            <h2 style={{fontFamily:'var(--font-display)',fontSize:'var(--text-3xl)',fontWeight:700,color:'#F0EDE8',margin:'0 0 var(--space-6)',lineHeight:1.25,letterSpacing:'-0.01em'}}>
+              Über 150 Jahre Vertrauen<br/>
+              <em style={{fontWeight:400,color:'#8AAD90'}}>in der Region Sontra.</em>
+            </h2>
+            <p style={{color:'#8AAD90',lineHeight:1.7,margin:'0 0 var(--space-4)'}}>
+              Seit 1872 begleitet das Bestattungsunternehmen Hesse-Buchenau die Menschen der Region in den schwierigsten Momenten ihres Lebens. Was als kleines Familienunternehmen in Sontra begann, ist heute ein erfahrenes Team, das Würde, Respekt und persönliche Begleitung in den Mittelpunkt stellt.
+            </p>
+            <p style={{color:'#8AAD90',lineHeight:1.7,margin:'0 0 var(--space-8)'}}>
+              Jede Bestattung ist ein einzigartiger Abschied. Wir hören zu, planen mit Ihnen, und nehmen Ihnen die Last der Formalitäten ab — damit Sie sich ganz dem Abschiednehmen widmen können.
+            </p>
+            <Button variant="secondary" href="#kontakt">Persönliches Gespräch vereinbaren</Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Kontakt ── */}
+      <section id="kontakt" style={{padding:'var(--space-20) var(--space-8)',background:'#FAF8F5'}}>
+        <div style={{maxWidth:1200,margin:'0 auto'}}><SectionHeader badge="Kontakt" badgeVariant="sage" metal="silver"
+          title="Wir sind für Sie da"
+          subtitle="Rufen Sie uns an — zu jeder Tages- und Nachtzeit."/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'var(--space-6)'}}>
+          <Card padding="lg" shadow="md">
+            <div style={{display:'flex',gap:'var(--space-4)',alignItems:'flex-start'}}>
+              <div style={{color:'#3D5541',marginTop:2,flexShrink:0}}><PhoneIcon/></div>
+              <div>
+                <div style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:'var(--text-lg)',marginBottom:'var(--space-1)',color:'#1A1714'}}>Telefon</div>
+                <div style={{color:'#6E6560',fontSize:'var(--text-sm)',lineHeight:1.8}}>
+                  <div>0 56 53 / 18 28</div><div>Fax: 0 56 53 / 50 89</div><div>Mobil: 0162 / 258 212 9</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+          <Card padding="lg" shadow="md">
+            <div style={{display:'flex',gap:'var(--space-4)',alignItems:'flex-start'}}>
+              <div style={{color:'#3D5541',marginTop:2,flexShrink:0}}><MapPinIcon/></div>
+              <div>
+                <div style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:'var(--text-lg)',marginBottom:'var(--space-1)',color:'#1A1714'}}>Adresse</div>
+                <div style={{color:'#6E6560',fontSize:'var(--text-sm)',lineHeight:1.8}}>
+                  <div>Schloßstraße 21</div><div>36205 Sontra</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+          <div style={{background:'#EEF5EF',border:'1px solid rgba(61,85,65,0.25)',borderTop:'2px solid rgba(168,136,74,0.7)',borderRadius:8,padding:'var(--space-8)'}}>
+            <div style={{display:'flex',gap:'var(--space-4)',alignItems:'flex-start'}}>
+              <div style={{color:'#A8884A',marginTop:2,flexShrink:0}}><MailIcon/></div>
+              <div>
+                <div style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:'var(--text-lg)',marginBottom:'var(--space-1)',color:'#7A6330'}}>Notfall</div>
+                <div style={{color:'#6E6560',fontSize:'var(--text-sm)',lineHeight:1.8,marginBottom:'var(--space-3)'}}>Rund um die Uhr erreichbar</div>
+                <Button variant="gold" size="sm" href="tel:016225821229"><PhoneIcon size={13}/>0162 / 258 212 9</Button>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer style={{background:'#162318',padding:'var(--space-12) var(--space-8) var(--space-8)',borderTop:'1px solid #0E1A10'}}>
+        <div style={{maxWidth:1200,margin:'0 auto'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'var(--space-4)',marginBottom:'var(--space-6)'}}>
+            <TreeMark size={26} color='#8AAD90'/>
+            <div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:'var(--text-sm)',fontWeight:700,letterSpacing:'0.07em',color:'#D6E8D8'}}>HESSE-BUCHENAU</div>
+              <div style={{fontSize:'0.58rem',fontWeight:600,letterSpacing:'0.16em',textTransform:'uppercase',color:'#546F59',marginTop:2}}>Bestattungsunternehmen · Seit 1872</div>
+            </div>
+          </div>
+          <OrnamentalDivider variant="copper" style={{opacity:0.45,marginBottom:'var(--space-6)'}}/>
+          <div style={{display:'flex',gap:'var(--space-8)',flexWrap:'wrap',justifyContent:'space-between',alignItems:'center'}}>
+            <p style={{margin:0,color:'#546F59',fontSize:'var(--text-xs)'}}>© 2026 Bestattungsunternehmen Hesse-Buchenau · Schloßstraße 21, 36205 Sontra</p>
+            <div style={{display:'flex',gap:'var(--space-6)'}}>
+              {['Impressum','Datenschutz'].map(l=>(
+                <a key={l} href="#" style={{fontSize:'var(--text-xs)',color:'#546F59',transition:'color 0.15s'}}
+                  onMouseEnter={e=>e.currentTarget.style.color='#D6E8D8'} onMouseLeave={e=>e.currentTarget.style.color='#546F59'}>{l}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
